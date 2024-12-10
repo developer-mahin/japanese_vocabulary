@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String       @id @default(uuid())
+  email      String       @unique
+  name       String?
+  photo      String?
+  password   String
+  role       UserRole     @default(USER)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Lesson     Lesson[]
+  Vocabulary Vocabulary[]
+
+  @@map("users")
+}
+
+model Lesson {
+  id           String @id @default(uuid())
+  lessonName   String
+  lessonNumber Int    @unique
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Vocabulary Vocabulary[]
+
+  @@map("lessons")
+}
+
+model Vocabulary {
+  id            String @id @default(uuid())
+  word          String
+  pronunciation String
+  meaning       String
+  whenToSay     String
+
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id])
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("vocabularies")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}

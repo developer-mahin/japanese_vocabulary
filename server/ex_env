@@ -1,0 +1,20 @@
+
+
+DATABASE_URL="postgresql://postgres:123456@localhost:5432/hr-management?schema=public"
+
+
+# -------------------------------------------------------------------------------------------------------------     
+JWT_SECRET = "djerkjsret2fg5fdgdgerwakoewjrfsf"
+EXPIRES_IN = "30d"
+REFRESH_TOKEN_SECRET = "rfsgsdeffdghtgdrdgdfgtyessokemadsjfge"
+REFRESH_TOKEN_EXPIRES_IN = "30d"
+
+ACCESS_TOKEN_SECRET = "ressdresffdfhTogfkgfgemadsjfge"
+
+RESET_PASSWORD_TOKEN_SECRET = "rsds48f4d4eessdresffdfhTogfkgfgemadsjfge"
+RESET_PASSWORD_EXPIRES_IN = "5m"
+RESET_PASSWORD_LINK= "http://localhost:3000/reset-password"
+EMAIL = "farhan.adnan1952@gmail.com"
+EMAIL_APP_PASSWORD = "epsw llyk bghy oubo "
+
+DATABASE_URL="postgresql://neondb_owner:NCX3GkO6siWH@ep-black-scene-a5a90lc1.us-east-2.aws.neon.tech/neondb?sslmode=require"
