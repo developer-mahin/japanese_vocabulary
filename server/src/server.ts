@@ -1,5 +1,6 @@
 import { Server } from "http";
 import app from "./app";
+import { seedAdmin } from "./DB/seed";
 
 const port = 5000;
 
@@ -9,4 +10,5 @@ function main() {
   });
 }
 
+seedAdmin()
 main();
