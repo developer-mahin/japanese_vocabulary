@@ -19,14 +19,14 @@ export const seedAdmin = async () => {
     const hashPassword = await bcrypt.hash(config.admin.adminPassword!, 10);
 
     const newUser = await prisma.user.create({
-        data: {
-          email: config.admin.adminEmail!,
-          password: hashPassword,
-          role: UserRole.ADMIN,
-          name: "Mahin Khan",
-          phoneNumber: "0125",
-        },
-      });
+      data: {
+        email: config.admin.adminEmail!,
+        password: hashPassword,
+        role: UserRole.ADMIN,
+        name: "Mahin Khan",
+        photo: "",
+      },
+    });
 
     console.log("Admin created successfully!");
   } catch (error) {

@@ -22,4 +22,5 @@ export default {
   reset_password_url: process.env.RESET_PASSWORD_LINK,
   smtp_email: process.env.SMTP_EMAIL,
   smtp_pass: process.env.SMTP_PASS,
+  NODE_ENV: process.env.NODE_ENV,
 };

@@ -3,6 +3,8 @@ import cors from "cors";
 
 import cookieParser from "cookie-parser";
 import httpStatus from "http-status";
+import router from "./app/routes";
+import globalErrorHandler from "./app/middleware/globalErrorhandler";
 
 const app: Application = express();
 app.use(cookieParser());
@@ -27,6 +29,10 @@ app.get("/", (req: Request, res: Response) => {
     message: "welcome to ,HR Management  API!",
   });
 });
+
+app.use("/api", router);
+
+app.use(globalErrorHandler);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(httpStatus.NOT_FOUND).json({
