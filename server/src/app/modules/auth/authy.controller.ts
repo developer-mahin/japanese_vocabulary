@@ -6,7 +6,36 @@ import AppError from "../../../shared/AppError";
 import { AuthServices } from "./auth.service";
 import { IRefreshTokenResponse } from "./auth.interface";
 
-const loginUser = catchAsync(async (req: Request, res: Response) => {
+const registerUser = catchAsync(async (req, res) => {
+  const result = await AuthServices.registerUser(req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User created successfully!",
+    data: result,
+  });
+});
+
+const verifyUser = catchAsync(async (req, res) => {
+  const { token } = req.params;
+  if (!token) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "something went wrong Please try again "
+    );
+  }
+  const result = await AuthServices.verifyUser(res, token);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.CREATED,
+    message: "you are now verified user, Please login!!",
+    data: result,
+  });
+});
+
+const loginUser = catchAsync(async (req, res) => {
   const result = await AuthServices.loginUser(req.body);
 
   const { refreshToken } = result;
@@ -30,7 +59,7 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     },
   });
 });
-const refreshToken = catchAsync(async (req: Request, res: Response) => {
+const refreshToken = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
 
   const result = await AuthServices.refreshToken(refreshToken);
@@ -43,7 +72,7 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const changePassword = catchAsync(async (req: Request, res: Response) => {
+const changePassword = catchAsync(async (req, res) => {
   const authorization: string = req.headers.authorization || "";
   const { ...passwordData } = req.body;
 
@@ -71,7 +100,7 @@ const forgotPassword = catchAsync(async (req, res) => {
   });
 });
 
-const resetPassword = catchAsync(async (req: Request, res: Response) => {
+const resetPassword = catchAsync(async (req, res) => {
   const token = req.headers.authorization;
 
   if (!token) {
@@ -89,9 +118,11 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const AuthController = {
+  registerUser,
   loginUser,
   refreshToken,
   changePassword,
   forgotPassword,
   resetPassword,
+  verifyUser,
 };

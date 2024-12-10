@@ -1,3 +1,10 @@
+export type TRegisterUser = {
+  email: string;
+  name: string;
+  photo: string;
+  password: string;
+};
+
 export type ILoginUser = {
   email: string;
   password: string;

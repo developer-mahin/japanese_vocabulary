@@ -19,6 +19,7 @@ export default {
     adminPassword: process.env.ADMIN_PASS,
   },
   front_end_url: process.env.FRONT_END_URL,
+  server_url: process.env.SERVER_URL,
   reset_password_url: process.env.RESET_PASSWORD_LINK,
   smtp_email: process.env.SMTP_EMAIL,
   smtp_pass: process.env.SMTP_PASS,

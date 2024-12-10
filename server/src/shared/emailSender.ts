@@ -1,7 +1,11 @@
-import httpStatus from "http-status";
 import nodemailer from "nodemailer";
-import AppError from "./AppError";
 import config from "../config";
+
+type TMailData = {
+  email: string;
+  subject: string;
+  html: string;
+};
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -16,17 +20,19 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendMail = async (email: string, html: string) => {
+const sendMail = async (mailData: TMailData) => {
   try {
-    await transporter.sendMail({
+    const mailOption = {
       from: config.smtp_email,
-      to: email,
-      subject: "Reset Password Link ✔",
-      text: "Click the button and reset your password",
-      html,
-    });
+      to: mailData.email,
+      subject: mailData.subject,
+      html: mailData.html,
+    };
+
+    const info = await transporter.sendMail(mailOption);
+    console.log("message %s", info.messageId);
   } catch (error: any) {
-    throw new AppError(httpStatus.BAD_REQUEST, error.message);
+    throw new Error(error);
   }
 };
 

@@ -1,11 +1,81 @@
 import * as bcrypt from "bcrypt";
 import httpStatus from "http-status";
-import { Secret } from "jsonwebtoken";
+import { JwtPayload, Secret } from "jsonwebtoken";
 import prisma from "../../../shared/prisma";
 import { jwtHelpers } from "../../../Helpers/jwtHealpers";
 import config from "../../../config";
 import sendMail from "../../../shared/emailSender";
 import AppError from "../../../shared/AppError";
+import { TRegisterUser } from "./auth.interface";
+import { verifyHtml } from "../../constant/verifyHTML";
+import { forgotPasswordHTML } from "../../constant/forgotPassword";
+import { Response } from "express";
+
+const registerUser = async (payload: TRegisterUser) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: payload.email,
+    },
+  });
+
+  if (userData) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User already exists!");
+  }
+
+  const token = jwtHelpers.generateToken(
+    payload,
+    config.jwt.jwt_secret as Secret,
+    "5m"
+  );
+
+  try {
+    const mailData = {
+      email: payload.email,
+      subject: "Account Activation Email",
+      html: verifyHtml(payload.name, token, config.server_url as string),
+    };
+
+    await sendMail(mailData);
+  } catch (error) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "failed to send verification email"
+    );
+  }
+};
+
+const verifyUser = async (res: Response, token: string) => {
+  const user = jwtHelpers.verifyToken(
+    token,
+    config.jwt.jwt_secret as Secret
+  ) as JwtPayload;
+
+  const { name, email, password, photo } = user;
+
+  const isExistUser = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (isExistUser) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "user already with this email address please try another email address"
+    );
+  }
+
+  await prisma.user.create({
+    data: {
+      name,
+      email,
+      password,
+      photo,
+    },
+  });
+
+  res.redirect(`${config.front_end_url}/login`);
+};
 
 const loginUser = async (payload: { email: string; password: string }) => {
   const userData = await prisma.user.findUniqueOrThrow({
@@ -141,32 +211,13 @@ const forgotPassword = async (payload: { email: string }) => {
   const resetPasswordLink =
     config.reset_password_url + `?email=${userData.email}&token=${token}`;
 
-  const html = `
-    <div>
-      <div>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi,
-          praesentium!
-        </p>
-      </div>
-      <a href=${resetPasswordLink}>
-        <button
-          style="
-            padding: 10px;
-            border-radius: 7px;
-            background-color: #0062ff;
-            color: white;
-            font-weight: 500;
-            border: none;
-          "
-        >
-          Reset Password
-        </button>
-      </a>
-    </div>
-    `;
+  const mailData = {
+    email: payload.email,
+    subject: "Account Forgot Password Email",
+    html: forgotPasswordHTML(userData?.name || "", resetPasswordLink),
+  };
 
-  await sendMail(userData.email, html);
+  await sendMail(mailData);
   return resetPasswordLink;
 };
 
@@ -210,6 +261,8 @@ const resetPassword = async (
   return result;
 };
 export const AuthServices = {
+  registerUser,
+  verifyUser,
   loginUser,
   refreshToken,
   changePassword,
