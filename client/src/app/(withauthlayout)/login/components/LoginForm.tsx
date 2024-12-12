@@ -1,12 +1,17 @@
 "use client";
 
+import HRForm from "@/components/Form/HRForm";
+import HRInput from "@/components/Form/HRInput";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { FieldValues, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
+import { loginUser } from "../../action/login";
+import { storeUserInfo } from "@/services/auth.services";
 
 const predefinedUsers = [
   {
@@ -28,15 +33,9 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   console.log(email, password);
 
-  const handleLogin = async (e: any) => {
-    e.preventDefault();
-    setLoading(true);
-    const form = e.target;
-    const email = form.email.value;
-    const password = form.password.value;
-    const data = { email, password };
+  const handleLogin: SubmitHandler<FieldValues> = async (data) => {
     try {
-      const res = await signInUser(data);
+      const res = await loginUser(data);
       if (res?.data?.accessToken) {
         toast.success(res?.message || "Login successful!");
         storeUserInfo({ accessToken: res?.data?.accessToken });
@@ -61,11 +60,10 @@ const LoginForm = () => {
 
   return (
     <div>
-      <form onSubmit={handleLogin}>
+      <HRForm onSubmit={handleLogin}>
         <div className="mb-5">
           <div>
-            <label className="mb-2 block font-medium">Email Address</label>
-            <input
+            <HRInput
               type="email"
               placeholder="Enter Email Address"
               name="email"
@@ -74,9 +72,8 @@ const LoginForm = () => {
             />
           </div>
         </div>
-        <div className="pb-2 relative">
-          <label className="mb-2 block font-medium">Password</label>
-          <input
+        <div className="pb-2">
+          <HRInput
             name="password"
             type="password"
             placeholder="Enter Password"
@@ -126,7 +123,7 @@ const LoginForm = () => {
         >
           {loading ? "Logging in..." : "Sign In"}
         </Button>
-      </form>
+      </HRForm>
     </div>
   );
 };
