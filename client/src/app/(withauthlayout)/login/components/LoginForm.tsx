@@ -2,8 +2,6 @@
 
 import HRForm from "@/components/Form/HRForm";
 import HRInput from "@/components/Form/HRInput";
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,6 +10,11 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import { loginUser } from "../../action/login";
 import { storeUserInfo } from "@/services/auth.services";
+import {
+  loginDefaultValues,
+  loginValidationSchema,
+} from "@/Validations/loginValidation";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const predefinedUsers = [
   {
@@ -60,24 +63,28 @@ const LoginForm = () => {
 
   return (
     <div>
-      <HRForm onSubmit={handleLogin}>
+      <HRForm
+        onSubmit={handleLogin}
+        resolver={zodResolver(loginValidationSchema)}
+        defaultValues={loginDefaultValues}
+      >
         <div className="mb-5">
           <div>
             <HRInput
+              label="Email Address"
               type="email"
               placeholder="Enter Email Address"
               name="email"
-              className="h-10 rounded-none border w-full px-4 outline-[#198754]  transition duration-200 outline-[1px]"
               defaultValue={email}
             />
           </div>
         </div>
         <div className="pb-2">
           <HRInput
+            label="Password"
             name="password"
             type="password"
             placeholder="Enter Password"
-            className="h-10 rounded-none border w-full px-4 outline-[#198754]  transition duration-200 outline-[1px]"
             defaultValue={password}
           />
         </div>

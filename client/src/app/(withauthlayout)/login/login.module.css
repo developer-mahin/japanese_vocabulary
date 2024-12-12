@@ -1,8 +1,6 @@
 .loginBg {
   /* background-image: url("../../assets/images/loginbg.jpg"); */
-  background-image: linear-gradient(
-      #ffffff80,
-      #ffffff80
-    ),
-    url("../../assets/images/loginbg.jpg");
+  background-image: linear-gradient(#ffffff80,
+      #ffffff80),
+    url("../../../assets/images/loginbg.jpg");
 }

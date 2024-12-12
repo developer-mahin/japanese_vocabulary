@@ -1,5 +1,6 @@
 "use client";
 
+import HRFileInput from "@/components/Form/HRFileInput";
 import HRForm from "@/components/Form/HRForm";
 import HRInput from "@/components/Form/HRInput";
 import { Button } from "@nextui-org/react";
@@ -36,22 +37,31 @@ const RegisterForm = () => {
     <div>
       <HRForm onSubmit={handleRegister}>
         <div className="mb-5">
-          <div>
-            <HRInput
-              type="email"
-              placeholder="Enter Email Address"
-              name="email"
-              className="h-10 rounded-none border w-full px-4 outline-[#198754]  transition duration-200 outline-[1px]"
-            />
-          </div>
+          <HRInput
+            label="Name"
+            type="text"
+            placeholder="Enter full name"
+            name="name"
+          />
+        </div>
+        <div className="mb-5">
+          <HRInput
+            label="Email Address"
+            type="email"
+            placeholder="Enter Email Address"
+            name="email"
+          />
         </div>
         <div className="pb-2">
           <HRInput
+            label="Password"
             name="password"
             type="password"
             placeholder="Enter Password"
-            className="h-10 rounded-none border w-full px-4 outline-[#198754]  transition duration-200 outline-[1px]"
           />
+        </div>
+        <div className="pb-2">
+          <HRFileInput label="Profile Picture" name="picture" className="" />
         </div>
 
         <div className="flex justify-end py-3">

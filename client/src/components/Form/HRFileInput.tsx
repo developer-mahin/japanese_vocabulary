@@ -1,3 +1,4 @@
+import { cn } from "@/utils/cn";
 import { Controller, useFormContext } from "react-hook-form";
 
 type FileInputProps = {
@@ -21,8 +22,14 @@ const HRFileInput = ({ name, label, className, disabled }: FileInputProps) => {
             <input
               type="file"
               disabled={disabled}
-              onChange={(e) => onChange(e.target.files)} // Pass FileList to react-hook-form
-              className={`h-10 w-full px-4 outline-[#198754] border transition duration-200 outline-[1px] ${className}`}
+              onChange={(e) => {
+                const files = e.target.files ? Array.from(e.target.files) : [];
+                onChange(files[0]); // Pass the files array to react-hook-form
+              }}
+              className={cn(
+                className,
+                "h-10 w-full px-4 outline-[#198754] border transition duration-200 outline-[1px]"
+              )}
             />
             {error && (
               <p className="text-red-500 text-sm my-1">{error.message}</p>
