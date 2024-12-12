@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 import LoginForm from "./components/LoginForm";
 import Image from "next/image";
-import { assets } from "@/app/assets";
 import style from "./login.module.css";
-
+import { assets } from "@/assets";
 export const metadata: Metadata = {
   title: "Login",
 };
@@ -26,8 +25,10 @@ const LoginPage = () => {
           </div>
 
           <div className="text-center mt-3">
-            <p className="font-semibold text-2xl">HR Nexus Login</p>
-            <p className="font-medium text-lg">Welcome Back, HR Nexus</p>
+            <p className="font-semibold text-2xl">Login Page</p>
+            <p className="font-medium text-lg">
+              Welcome Back, Japanese Vocabulary
+            </p>
           </div>
         </div>
         <LoginForm />

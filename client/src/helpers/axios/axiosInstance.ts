@@ -1,11 +1,9 @@
-import { authKey } from "@/app/constants";
-import { getNewAccessToken } from "@/app/services/actions/auth.services";
-import setAccessToken from "@/app/services/actions/setAccessToken";
-import { IGenericErrorResponse, ResponseSuccessType } from "@/app/types";
-import {
-  getFromLocalStorage,
-  setToLocalStorage,
-} from "@/app/utils/localStorage";
+import { authKey } from "@/constants";
+import { getNewAccessToken } from "@/services/auth.services";
+import setAccessToken from "@/services/setAccessToken";
+import { IGenericErrorResponse, ResponseSuccessType } from "@/types";
+import { getFromLocalStorage, setToLocalStorage } from "@/utils/localStorage";
+
 import axios from "axios";
 
 const instance = axios.create();
