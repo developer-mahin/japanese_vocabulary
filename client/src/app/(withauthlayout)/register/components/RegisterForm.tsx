@@ -6,6 +6,11 @@ import HRForm from "@/components/Form/HRForm";
 import HRInput from "@/components/Form/HRInput";
 import { BASE_URL } from "@/constants";
 import { imageUploadIntoImgbb } from "@/utils/uploadImage";
+import {
+  registerDefaultValues,
+  registerValidationSchema,
+} from "@/Validations/loginValidation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -62,7 +67,11 @@ const RegisterForm = () => {
 
   return (
     <div>
-      <HRForm onSubmit={handleRegister}>
+      <HRForm
+        onSubmit={handleRegister}
+        resolver={zodResolver(registerValidationSchema)}
+        defaultValues={registerDefaultValues}
+      >
         <div className="mb-5">
           <HRInput
             label="Name"

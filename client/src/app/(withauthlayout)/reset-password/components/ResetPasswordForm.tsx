@@ -5,10 +5,10 @@ import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { resetPassword } from "../../action/resetPassword";
 import { loginUser } from "../../action/login";
 import { toast } from "sonner";
-import { storeUserInfo } from "@/app/services/actions/auth.services";
+import { resetPassword } from "../../action/resetPassword";
+import { storeUserInfo } from "@/services/auth.services";
 
 const ResetPasswordForm = () => {
   const [loading, setLoading] = useState(false);
