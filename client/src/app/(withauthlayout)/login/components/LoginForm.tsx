@@ -1,7 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import HRForm from "@/components/Form/HRForm";
 import HRInput from "@/components/Form/HRInput";
+import { storeUserInfo } from "@/services/auth.services";
+import {
+  loginDefaultValues,
+  loginValidationSchema,
+} from "@/Validations/loginValidation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,12 +16,6 @@ import { useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import { loginUser } from "../../action/login";
-import { storeUserInfo } from "@/services/auth.services";
-import {
-  loginDefaultValues,
-  loginValidationSchema,
-} from "@/Validations/loginValidation";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 const predefinedUsers = [
   {
@@ -34,24 +35,27 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  console.log(email, password);
 
   const handleLogin: SubmitHandler<FieldValues> = async (data) => {
     try {
+      setLoading(true);
       const res = await loginUser(data);
-      if (res?.data?.accessToken) {
+
+      console.log(res);
+
+      if (res.success) {
         toast.success(res?.message || "Login successful!");
         storeUserInfo({ accessToken: res?.data?.accessToken });
         router.refresh();
+        setLoading(false);
       } else {
-        toast.error("Invalid response from the server");
+        toast.error(res?.message || "Login failed!");
+        setLoading(false);
       }
     } catch (err: any) {
       const errorMessage =
-        err?.response?.data?.message ||
-        "Account does not exist. Please register first!";
+        err.message || "Account does not exist. Please register first!";
       toast.error(errorMessage);
-    } finally {
       setLoading(false);
     }
   };

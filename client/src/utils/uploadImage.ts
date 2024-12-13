@@ -1,13 +1,19 @@
-import axios from "axios";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { toast } from "sonner";
+export const imageUploadIntoImgbb = (formData: any) => {
+  const url = `https://api.imgbb.com/1/upload?key=e6715828d226108de92f2bc703211a4e`;
 
-export const uploadImage = async (file: File) => {
-  console.log(file);
-  const formData = new FormData();
-  formData.append("image", file);
-  formData.append("key", "e94733bfe624d19265739146a3f12f4e");
-  const imageResponse = await axios.post(
-    "https://api.imgbb.com/1/upload",
-    formData
-  );
-  return imageResponse.data.data.url;
+  const image = fetch(url, {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.json())
+    .then((imageData) => {
+      return imageData.data.display_url;
+    })
+    .catch(() => {
+      toast.error("Image not upload please try again");
+    });
+
+  return image;
 };

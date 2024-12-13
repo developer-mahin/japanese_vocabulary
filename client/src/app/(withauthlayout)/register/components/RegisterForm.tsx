@@ -1,36 +1,63 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import HRFileInput from "@/components/Form/HRFileInput";
 import HRForm from "@/components/Form/HRForm";
 import HRInput from "@/components/Form/HRInput";
+import { BASE_URL } from "@/constants";
+import { imageUploadIntoImgbb } from "@/utils/uploadImage";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
+import { toast } from "sonner";
 
 const RegisterForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleRegister: SubmitHandler<FieldValues> = async (data) => {
-    // try {
-    //   const res = await registerUser(data);
-    //   if (res?.data?.accessToken) {
-    //     toast.success(res?.message || "Login successful!");
-    //     storeUserInfo({ accessToken: res?.data?.accessToken });
-    //     router.refresh();
-    //   } else {
-    //     toast.error("Invalid response from the server");
-    //   }
-    // } catch (err: any) {
-    //   const errorMessage =
-    //     err?.response?.data?.message ||
-    //     "Account does not exist. Please register first!";
-    //   toast.error(errorMessage);
-    // } finally {
-    //   setLoading(false);
-    // }
+    setLoading(true);
 
-    console.log(data);
+    const formData = new FormData();
+    formData.append("image", data.picture);
+
+    try {
+      const profilePicture = await imageUploadIntoImgbb(formData);
+      if (!profilePicture) {
+        setLoading(false);
+        return; // Stop further processing if the image upload failed
+      }
+      const userData = {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        photo: profilePicture,
+      };
+
+      const res = await fetch(`${BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const response = await res.json();
+
+      if (response.success) {
+        toast.success("Please check your mail and verify your account!");
+        setLoading(false);
+      } else {
+        toast.error(response?.message || "Registration failed!");
+        setLoading(false);
+      }
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        "Account does not exist. Please register first!";
+      toast.error(errorMessage);
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,7 +107,7 @@ const RegisterForm = () => {
           }`}
           isDisabled={loading}
         >
-          {loading ? "Logging in..." : "Sign In"}
+          {loading ? "Signing in..." : "Sign In"}
         </Button>
       </HRForm>
     </div>

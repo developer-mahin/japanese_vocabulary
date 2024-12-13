@@ -3,10 +3,12 @@
 import { BASE_URL } from "@/constants";
 import { FieldValues } from "react-hook-form";
 
-export const registerUser = async (payload: FieldValues) => {
-  console.log(payload);
+export type TLoginProps = {
+  email: string;
+};
 
-  const res = await fetch(`${BASE_URL}/auth/register`, {
+export const forgotPassword = async (payload: FieldValues) => {
+  const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

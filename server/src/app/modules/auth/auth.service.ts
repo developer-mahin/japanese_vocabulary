@@ -12,7 +12,7 @@ import { forgotPasswordHTML } from "../../constant/forgotPassword";
 import { Response } from "express";
 
 const registerUser = async (payload: TRegisterUser) => {
-  const userData = await prisma.user.findUniqueOrThrow({
+  const userData = await prisma.user.findUnique({
     where: {
       email: payload.email,
     },
@@ -22,8 +22,15 @@ const registerUser = async (payload: TRegisterUser) => {
     throw new AppError(httpStatus.BAD_REQUEST, "User already exists!");
   }
 
+  const payloadData = {
+    name: payload.name,
+    email: payload.email,
+    password: payload.password,
+    photo: payload.photo,
+  };
+
   const token = jwtHelpers.generateToken(
-    payload,
+    payloadData,
     config.jwt.jwt_secret as Secret,
     "5m"
   );
@@ -65,11 +72,13 @@ const verifyUser = async (res: Response, token: string) => {
     );
   }
 
+  const hashPassword = await bcrypt.hash(password, 10);
+
   await prisma.user.create({
     data: {
       name,
       email,
-      password,
+      password: hashPassword,
       photo,
     },
   });

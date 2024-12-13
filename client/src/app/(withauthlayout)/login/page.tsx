@@ -38,7 +38,7 @@ const LoginPage = () => {
         <div className="my-4">
           <Divider />
           <p className=" mt-2 text-center">
-            If don't have account, please{" "}
+            If don&apos;t have account, please{" "}
             <Link href="/register" className="text-primary hover:underline ">
               Create account
             </Link>

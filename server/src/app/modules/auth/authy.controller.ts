@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
-import catchAsync from "../../../shared/catchAsync";
-import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import AppError from "../../../shared/AppError";
-import { AuthServices } from "./auth.service";
+import catchAsync from "../../../shared/catchAsync";
+import sendResponse from "../../../shared/sendResponse";
 import { IRefreshTokenResponse } from "./auth.interface";
+import { AuthServices } from "./auth.service";
 
 const registerUser = catchAsync(async (req, res) => {
+  console.log(req.body);
   const result = await AuthServices.registerUser(req.body);
 
   sendResponse(res, {
